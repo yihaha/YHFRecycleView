@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addFooterView() {
+        View layout = LayoutInflater.from(this).inflate(R.layout.bottomloading, null);
+        mYAdapter.addFooterView(layout);
     }
 
     private int mPreviousPoint; //上一个点的位置

@@ -24,7 +24,7 @@ public class YRollViewpager extends ViewPager {
 
     private MyPageAdapter myPageAdapter;
     public int mPreviousPoint; //上一个点的位置
-    private ArrayList<String > imgsUrl;
+    private ArrayList<String> imgsUrl;
     private Context mContext;
     //默认在0页
     private int mCurrentItem; //默认在0页
@@ -55,7 +55,6 @@ public class YRollViewpager extends ViewPager {
         myPageAdapter = new MyPageAdapter();
         this.setAdapter(myPageAdapter);
         this.setCurrentItem(mCurrentItem);
-
     }
 
 
@@ -71,9 +70,14 @@ public class YRollViewpager extends ViewPager {
      * 开始轮播
      */
     public void startRollPage() {
+        /** 先移除消息,保证最多只有一个消息 */
+        mHandler.removeMessages(0);
         mHandler.sendEmptyMessageDelayed(0, mLimitTime);
     }
 
+    public void stopRollPage() {
+        mHandler.removeMessages(0);
+    }
 
     public class MyPageAdapter extends PagerAdapter {
 
@@ -156,12 +160,29 @@ public class YRollViewpager extends ViewPager {
         }
     }
 
-    //    从界面移出的时候会调用方法
+//    //    从界面移出的时候会调用方法
+//    @Override
+//    public void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        //移除所有的任务
+//        mHandler.removeCallbacksAndMessages(null);
+//    }
+
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        //移除所有的任务
-        mHandler.removeCallbacksAndMessages(null);
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        switch (visibility) {
+            case VISIBLE:
+                startRollPage();
+
+                break;
+
+            case INVISIBLE:
+            case GONE:
+                stopRollPage();
+
+                break;
+        }
     }
 
     public interface OnpageItemClickListener {
@@ -205,7 +226,6 @@ public class YRollViewpager extends ViewPager {
 ////
 //        return super.onInterceptTouchEvent(ev);
 //    }
-
 
 
     /**
